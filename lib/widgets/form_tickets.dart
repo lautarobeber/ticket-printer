@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 // import 'package:uuid/uuid.dart';
 import 'package:sunmi/hive/ticket.dart';
+import 'package:uuid/uuid.dart';
 
 
 
@@ -15,6 +16,7 @@ class _TicketFormState extends State<TicketForm> {
   final _formKey = GlobalKey<FormState>();
   String _ticketName = '';
   double _ticketPrice = 0.0;
+  var uuid = Uuid();
 
   // Controladores para los campos de texto
   final TextEditingController _nameController = TextEditingController();
@@ -28,15 +30,16 @@ class _TicketFormState extends State<TicketForm> {
   }
 
   Future<void> _submitForm() async {
+
+    
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save(); // Guardar los valores del formulario
 
 
       //var uuid = Uuid(); id unico
       // Crear el ticket y guardarlo en Hive
-      Random random = Random();
-      int randomId = random.nextInt(100000);
-      Ticket newTicket = Ticket(id: randomId, name: _ticketName, price: _ticketPrice);
+      
+      Ticket newTicket = Ticket(id: uuid.v4(), name: _ticketName, price: _ticketPrice);
       //await HiveData().saveTicket(newTicket);
 
       // Limpiar los campos después de guardar

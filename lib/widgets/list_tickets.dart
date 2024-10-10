@@ -53,7 +53,7 @@ class _ListarState extends State<ListarScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => UpdateScreen(
-                ticket: Ticket(id: 0, name: '', price: 0.0),
+                ticket: Ticket(id: 'asd123', name: '', price: 0.0),
                 indiceTicket: null,
                 guardar: true,
               ),
@@ -83,19 +83,23 @@ class _ListarState extends State<ListarScreen> {
                 '${ticketIndividual.name}\nPrecio: ${ticketIndividual.price}', // Cambia 'ticket' por 'ticketIndividual'
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                var result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => UpdateScreen(
                       ticket:
                           ticketIndividual, // Cambia 'ticket' por 'ticketIndividual'
-                      indiceTicket: ticketIndividual.id,
+                      indiceTicket: 1,
                       guardar: false,
                     ),
                   ),
                 );
+                if (result == true) {
+                  setState(() {});
+                }
               },
+              
             ),
             trailing: IconButton(
               icon: Icon(Icons.delete),
@@ -111,7 +115,7 @@ class _ListarState extends State<ListarScreen> {
     );
   }
 
-  void _deleteTicket(int id) {
+  void _deleteTicket(String id) {
     ticketsProvider.deleteTicket(id);
   }
 }

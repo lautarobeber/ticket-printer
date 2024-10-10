@@ -1,41 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ticket.dart';
+part of 'empresa.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TicketAdapter extends TypeAdapter<Ticket> {
+class EmpresaAdapter extends TypeAdapter<Empresa> {
   @override
-  final int typeId = 0;
+  final int typeId = 3;
 
   @override
-  Ticket read(BinaryReader reader) {
+  Empresa read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Ticket(
+    return Empresa(
       id: fields[0] as String,
-      name: fields[1] as String,
-      price: fields[2] as double,
-      quantity: fields[3] as int,
+      title: fields[1] as String,
+      imageBytes: fields[2] as Uint8List,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Ticket obj) {
+  void write(BinaryWriter writer, Empresa obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.price)
-      ..writeByte(3)
-      ..write(obj.quantity);
+      ..write(obj.imageBytes);
   }
 
   @override
@@ -44,7 +41,7 @@ class TicketAdapter extends TypeAdapter<Ticket> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TicketAdapter &&
+      other is EmpresaAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

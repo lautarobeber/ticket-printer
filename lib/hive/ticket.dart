@@ -5,7 +5,7 @@ part 'ticket.g.dart';
 @HiveType(typeId:0)
 class Ticket extends HiveObject {
   @HiveField(0)
-  int id;
+  String id;
   @HiveField(1)
   String name;
   @HiveField(2)

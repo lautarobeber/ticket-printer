@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sunmi/hive/ticket.dart';
 import 'package:sunmi/providers/tickets_provider.dart';
 import 'package:sunmi/widgets/home_screen.dart';
+import 'package:uuid/uuid.dart';
 import 'list_tickets.dart';
 import 'dart:math';
 
@@ -22,7 +23,7 @@ class UpdateScreen extends StatefulWidget {
 
 class _UpdateScreenState extends State<UpdateScreen> {
   // final _controller = ScrollController();
-
+  var uuid = Uuid();
   var ticketProvider = TicketsProvider();
 
   @override
@@ -38,7 +39,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-   
 
     return Scaffold(
       appBar: AppBar(
@@ -56,8 +56,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   initialValue:
                       widget.indiceTicket != null ? widget.ticket.name : '',
                   onSaved: (newName) {
-                    // Validamos que newName no sea null
-                    widget.ticket.id = _generarIdAleatorio();
+                    if (widget.indiceTicket == null) {
+                      // Solo generar un nuevo ID si es un ticket nuevo
+                      widget.ticket.id = uuid.v4();
+                      print(widget.ticket.id);
+                    }
+                    print(widget.ticket.id);
                     widget.ticket.name = newName!;
                   },
                 ),
@@ -95,10 +99,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
           },
           icon: Icon(Icons.save)),
     );
-  }
-
-  int _generarIdAleatorio() {
-    return Random().nextInt(100000); // Generar un ID aleatorio
   }
 
   _addTicket(var ticket) {

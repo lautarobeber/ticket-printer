@@ -286,7 +286,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _deleteTicket(int id) {
+  void _deleteTicket(String id) {
     ticketsProvider.deleteTicket(id);
   }
 }

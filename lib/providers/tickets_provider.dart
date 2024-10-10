@@ -21,12 +21,12 @@ class TicketsProvider with ChangeNotifier {
  Future<List<Ticket>> getTickets() async {
   // Simulamos un pequeño retraso para simular una operación asincrónica
   await Future.delayed(Duration(milliseconds: 100));
-  
+  print('se recuperaron ${box.values.length}');
   // Obtener los tickets de la base de datos Hive
   return box.values.toList();
 }
 
-  Future<bool> deleteTicket(int id) async {
+  Future<bool> deleteTicket(String id) async {
     if (box.containsKey(id)) {
       await box.delete(id); // Elimina el ticket por su ID
       notifyListeners();
@@ -42,7 +42,7 @@ class TicketsProvider with ChangeNotifier {
     print('El box ha sido vaciado.');
   }
 
-  Future<bool> updateTicket(int id, Ticket ticket) async {
+  Future<bool> updateTicket(String id, Ticket ticket) async {
     await box.put(id, ticket); // Actualizar el ticket con la misma clave (ID)
     notifyListeners();
     return true;
