@@ -31,10 +31,16 @@ import 'package:ticket_widget/ticket_widget.dart';
 
 
 class MyTicketView extends StatelessWidget {
-  const MyTicketView({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> tickets;
 
+  // Constructor que recibe los tickets
+  const MyTicketView({Key? key, required this.tickets}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
+    print('tickets $tickets');
+    //nno se cargan los tickets
+  
     return const Scaffold(
       backgroundColor: Colors.blueGrey,
       body: Center(
@@ -51,11 +57,13 @@ class MyTicketView extends StatelessWidget {
 }
 
 class TicketData extends StatelessWidget {
+
+  
   const TicketData({
     Key? key,
   }) : super(key: key);
 
-  @override
+  
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

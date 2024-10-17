@@ -19,19 +19,25 @@ class EmpresaAdapter extends TypeAdapter<Empresa> {
     return Empresa(
       id: fields[0] as String,
       title: fields[1] as String,
-      imageBytes: fields[2] as Uint8List,
+      imageBytes: fields[4] as Uint8List,
+      pointSale: fields[2] as String,
+      seller: fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Empresa obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.title)
       ..writeByte(2)
+      ..write(obj.pointSale)
+      ..writeByte(3)
+      ..write(obj.seller)
+      ..writeByte(4)
       ..write(obj.imageBytes);
   }
 

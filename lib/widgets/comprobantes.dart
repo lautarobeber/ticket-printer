@@ -42,7 +42,7 @@ class _OrdenesScreenState extends State<OrdenesScreen> {
 
           // Si hay órdenes, las mostramos en una lista
           var ordenes = snapshot.data;
-
+         
           return ordenes == null || ordenes.isEmpty
               ? Center(
                   child: Text('No hay órdenes disponibles'),
@@ -62,7 +62,7 @@ class _OrdenesScreenState extends State<OrdenesScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                MyTicketView(),
+                                MyTicketView(tickets: orden['tickets']),
                           ),
                         );
                       },

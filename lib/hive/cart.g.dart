@@ -19,7 +19,7 @@ class CartAdapter extends TypeAdapter<Cart> {
     return Cart(
       cartId: fields[0] as String,
       items: (fields[1] as List).cast<CartItem>(),
-      total: fields[2] as String,
+      total: fields[2] as double,
     );
   }
 
@@ -60,19 +60,22 @@ class CartItemAdapter extends TypeAdapter<CartItem> {
       ticketId: fields[0] as String,
       price: fields[2] as double,
       cantidad: fields[1] as int,
+      name: fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, CartItem obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.ticketId)
       ..writeByte(1)
       ..write(obj.cantidad)
       ..writeByte(2)
-      ..write(obj.price);
+      ..write(obj.price)
+      ..writeByte(3)
+      ..write(obj.name);
   }
 
   @override

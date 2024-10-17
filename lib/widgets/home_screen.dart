@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:visibility_detector/visibility_detector.dart'; // Importar el paquete
 import 'package:sunmi/providers/cart_provider.dart';
 import 'package:sunmi/providers/tickets_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -14,9 +15,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  List<double> moneyList = []; // Lista para almacenar los montos
   List<Ticket> tickets = []; // Lista para almacenar los tickets
   List<Ticket> cart = []; // Lista para almacenar los tickets en el carrito.
+  
   double totalMoney = 0.0; // Variable para almacenar la suma total
   var uuid = Uuid();
 
@@ -25,15 +26,13 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
     loadTickets(); // Cargar tickets al iniciar.
   }
 
   Future<void> loadTickets() async {
-    // Cargar los tickets desde Hive
     final List<Ticket> newTickets = await ticketsProvider.getTickets();
 
-    // Verificar si los tickets han cambiado.
+    // Verificar si los tickets han cambiado y actualiza la lista si es necesario.
     if (newTickets != tickets) {
       setState(() {
         tickets = newTickets;
@@ -47,15 +46,6 @@ class HomeScreenState extends State<HomeScreen> {
     ticketsProvider.dispose();
   }
 
-  int getCartQuantity(Ticket ticket) {
-    final cartTicket = cart.firstWhere(
-      (t) => t.id == ticket.id,
-      orElse: () => Ticket(
-          id: ticket.id, name: ticket.name, price: ticket.price, quantity: 0),
-    );
-    return cartTicket.quantity;
-  }
-
   void _printOrder() async {
     var id_cart = uuid.v4();
 
@@ -63,27 +53,10 @@ class HomeScreenState extends State<HomeScreen> {
 
     if (success) {
       // Vaciar el carrito en la interfaz
-      print('agregado');
       setState(() {
         cart = []; // Vaciamos el carrito
       });
     }
-  }
-
-  void _decreaseTicketQuantity(Ticket ticket) {
-    setState(() {
-      final existingTicketIndex = cart.indexWhere((t) => t.id == ticket.id);
-
-      if (existingTicketIndex != -1) {
-        if (cart[existingTicketIndex].quantity > 1) {
-          cart[existingTicketIndex].quantity -= 1;
-        } else {
-          cart.removeAt(existingTicketIndex);
-        }
-      }
-
-      _calculateTotal(); // Recalcular el total
-    });
   }
 
   void _addTicket(Ticket ticket) {
@@ -106,7 +79,6 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Función para calcular el total.
   void _calculateTotal() {
     totalMoney =
         cart.fold(0.0, (sum, ticket) => sum + (ticket.price * ticket.quantity));
@@ -114,29 +86,39 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Menu'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              loadTickets();
-              setState(() {
-                cart = [];
-              }); // Llama a loadTickets para recargar los tickets
-            },
-          ),
-        ],
-      ),
-      drawer: AppDrawer(loadTickets: loadTickets),
-      body: FutureBuilder<List<Ticket>>(
+    return VisibilityDetector(
+      key: const Key('home_screen_visibility_detector'),
+      onVisibilityChanged: (visibilityInfo) {
+        // Si el widget es visible, recargar los tickets
+        if (visibilityInfo.visibleFraction > 0.0) {
+          loadTickets();
+          setState(() {
+            cart = [];
+          }); // Recargar tickets cuando el widget sea visible
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Menu'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                loadTickets();
+                setState(() {
+                  cart = [];
+                }); // Vaciar carrito y recargar tickets manualmente
+              },
+            ),
+          ],
+        ),
+        drawer: AppDrawer(loadTickets: loadTickets),
+        body: FutureBuilder<List<Ticket>>(
           future: ticketsProvider.getTickets(),
           builder: (context, snapShot) {
             if (snapShot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child:
-                      CircularProgressIndicator()); // Muestra un indicador de carga
+              return const Center(
+                  child: CircularProgressIndicator()); // Indicador de carga
             } else if (snapShot.connectionState == ConnectionState.done) {
               return (ticketsProvider.box.length < 1)
                   ? Container(
@@ -146,53 +128,48 @@ class HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(fontSize: 18, color: Colors.black54),
                       ),
                     )
-                  : _getTicketsHome(
-                      context); // Muestra los tickets si están disponibles
+                  : _getTicketsHome(context); // Mostrar los tickets disponibles
             }
             return Container();
-          }),
-
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: cart.isNotEmpty
-          ? SizedBox(
-              width: 200, // Ancho del botón
-              height: 50, // Alto del botón
-              child: ElevatedButton(
-                onPressed: () async {
-                  // Llama a la función agregarTickets cuando se presiona el botón
-                  _printOrder(); // Asegúrate de que la función sea asíncrona
-                },
-                child: Text(
-                  'COBRAR \$${totalMoney.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    color: Colors.black, // Cambia el color del texto aquí
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: cart.isNotEmpty
+            ? SizedBox(
+                width: 200, // Ancho del botón
+                height: 50, // Alto del botón
+                child: ElevatedButton(
+                  onPressed: () async {
+                    _printOrder(); // Procesar orden
+                  },
+                  child: Text(
+                    'COBRAR \$${totalMoney.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 77, 232, 5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 77, 232, 5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        10), // Bordes redondeados si lo deseas
-                  ),
-                ),
-              ),
-            )
-          : null, // Si moneyList está vacío, no muestra el botón
+              )
+            : null,
+      ),
     );
   }
 
   ListView _getTicketsHome(BuildContext context) {
-    
-
     return ListView.builder(
       itemCount: tickets.length,
       itemBuilder: (context, ticketsIndex) {
-        var ticketIndividual =
-            tickets[ticketsIndex]; // Cambia 'id' por 'ticketsIndex'
+        var ticketIndividual = tickets[ticketsIndex]; // Ticket actual
         return Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.blue, // El color del contenedor es dinámico
+            color: Colors.blue,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Stack(
@@ -200,7 +177,6 @@ class HomeScreenState extends State<HomeScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  // Fila superior: Nombre a la izquierda y botón de eliminar a la derecha
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -208,8 +184,7 @@ class HomeScreenState extends State<HomeScreen> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            ticketIndividual
-                                .name, // Mostramos el nombre del ticket
+                            ticketIndividual.name, // Nombre del ticket
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
@@ -221,22 +196,19 @@ class HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         icon: const Icon(Icons.remove,
                             color: Colors.red, size: 46),
-                        padding: EdgeInsets.zero,
                         onPressed: () {
-                          // Lógica para eliminar el ticket
                           _decreaseTicketQuantity(ticketIndividual);
                         },
                       ),
                     ],
                   ),
-                  // Fila inferior: Precio a la izquierda y botón "Agregar" a la derecha
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          'Precio: \$${ticketIndividual.price.toStringAsFixed(2)}', // Precio del ticket
+                          'Precio: \$${ticketIndividual.price.toStringAsFixed(2)}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -247,7 +219,7 @@ class HomeScreenState extends State<HomeScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          'Cantidad: ${getCartQuantity(ticketIndividual)}', // Precio del ticket
+                          'Cantidad: ${getCartQuantity(ticketIndividual)}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -258,18 +230,16 @@ class HomeScreenState extends State<HomeScreen> {
                       ElevatedButton(
                         onPressed: () {
                           _addTicket(
-                              ticketIndividual); // Agrega el monto del ticket
+                              ticketIndividual); // Agregar ticket al carrito
                         },
                         child: const Text(
                           'Agregar',
                           style: TextStyle(
-                            color:
-                                Colors.black, // Cambia el color del texto aquí
+                            color: Colors.black,
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 255, 255, 255),
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -286,7 +256,28 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _deleteTicket(String id) {
-    ticketsProvider.deleteTicket(id);
+  void _decreaseTicketQuantity(Ticket ticket) {
+    setState(() {
+      final existingTicketIndex = cart.indexWhere((t) => t.id == ticket.id);
+
+      if (existingTicketIndex != -1) {
+        if (cart[existingTicketIndex].quantity > 1) {
+          cart[existingTicketIndex].quantity -= 1;
+        } else {
+          cart.removeAt(existingTicketIndex);
+        }
+      }
+
+      _calculateTotal(); // Recalcular total
+    });
+  }
+
+  int getCartQuantity(Ticket ticket) {
+    final cartTicket = cart.firstWhere(
+      (t) => t.id == ticket.id,
+      orElse: () => Ticket(
+          id: ticket.id, name: ticket.name, price: ticket.price, quantity: 0),
+    );
+    return cartTicket.quantity;
   }
 }

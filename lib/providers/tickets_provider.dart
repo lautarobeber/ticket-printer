@@ -21,7 +21,7 @@ class TicketsProvider with ChangeNotifier {
  Future<List<Ticket>> getTickets() async {
   // Simulamos un pequeño retraso para simular una operación asincrónica
   await Future.delayed(Duration(milliseconds: 100));
-  print('se recuperaron ${box.values.length}');
+  
   // Obtener los tickets de la base de datos Hive
   return box.values.toList();
 }

@@ -13,7 +13,7 @@ class Cart extends HiveObject {
   @HiveField(1)
   final List<CartItem> items;
   @HiveField(2)
-   String total;
+   double total;
 
   Cart({
     required this.cartId,
@@ -32,10 +32,15 @@ class CartItem extends HiveObject{
   int cantidad;
   @HiveField(2)
   double price;
+  
+  @HiveField(3)
+  final String name;
+
 
   CartItem({
     required this.ticketId,
     required this.price,
     required this.cantidad,
+    required this.name,
   });
 }

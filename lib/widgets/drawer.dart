@@ -113,7 +113,7 @@ void _showPasswordDialog(BuildContext context) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const AdminScreen()),
+                          builder: (context) => AdminScreen()),
                     );
                   } else {
                     // Actualiza el estado con el mensaje de error
