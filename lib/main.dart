@@ -5,6 +5,7 @@ import 'package:sunmi/hive/credito.dart';
 import 'package:sunmi/hive/empresa.dart';
 import 'package:sunmi/hive/ticket.dart';
 import 'package:sunmi/providers/cart_provider.dart';
+import 'package:sunmi/providers/empresa_provider.dart';
 import 'package:sunmi/widgets/admin_screen.dart';
 import 'package:sunmi/widgets/comprobantes.dart';
 import 'package:sunmi/widgets/superadmin_screen.dart';
@@ -33,7 +34,7 @@ void main() async {
   await Hive.openBox<Empresa>('empresa');
   await Hive.openBox<Cart>('carts');
   await Hive.openBox<Credito>('credito');
-
+  
   // Inicia tu aplicación
   runApp(const MyApp());
 }

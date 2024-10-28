@@ -22,7 +22,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  List<Ticket> tickets = []; // Lista para almacenar los tickets
+  List<Ticket> tickets = [];
+   // Lista para almacenar los tickets
   List<Ticket> cart = []; // Lista para almacenar los tickets en el carrito.
   String? _title;
   String? _pointSale;
@@ -49,7 +50,7 @@ class HomeScreenState extends State<HomeScreen> {
     // Espera el resultado del Future y asigna el valor a una variable double?
     _creditUsed = await calculateTotalCollected();
 
-    print("Total recolectado: $_creditUsed ");
+    
   }
 
   Future<void> _cargarCredito() async {
@@ -128,7 +129,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     // Generar el UUID
     var uuid = Uuid().v4();
-    print("UUID original: $uuid");
+    
 
     // Convertir el UUID a bytes
     var uuidBytes = utf8.encode(uuid);
@@ -137,7 +138,7 @@ class HomeScreenState extends State<HomeScreen> {
     var id_cart = base64UrlEncode(uuidBytes).substring(0, 16);
 
     bool success = await agregarTicketsAlCarrito(id_cart, cart);
-    /* await printer.printTicket(cart, id_cart, _title, _seller, _pointSale); */
+    await printer.printTicket(cart, id_cart, _title, _seller, _pointSale);
     if (success) {
       // Vaciar el carrito en la interfaz
       setState(() {

@@ -108,18 +108,18 @@ class _AdminScreenState extends State<AdminScreen> {
       String seller = field3Controller.text; // Vendedor
 
       // Asegúrate de que _imageBytes no sea nulo
-      if (_imageBytes == null) {
+      /* if (_imageBytes == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Por favor seleccione una imagen'),
         ));
         return;
-      }
+      } */
       //GUARDE UNO PERO AHORA QUIERO QUE SE ACTUALICE SOLAMENTE
 
       Empresa nuevaEmpresa = Empresa(
         id: _id!, // Usar el ID existente
         title: title,
-        imageBytes: _imageBytes!,
+        //imagen
         pointSale: pointSale,
         seller: seller,
       );
@@ -197,7 +197,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     },
                   ),
                   SizedBox(height: 24),
-                  ElevatedButton(
+                /*   ElevatedButton(
                     onPressed: seleccionarImagen,
                     child: Text('Seleccionar Logo'),
                   ),
@@ -208,7 +208,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       : Text('No se ha seleccionado ninguna imagen'),
                   SizedBox(height: 20),
                   // Botón para guardar el formulario
-
+ */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

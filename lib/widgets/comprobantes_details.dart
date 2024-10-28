@@ -40,11 +40,11 @@ class MyTicketView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(tickets);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ticket'),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
       ),
       backgroundColor: Colors.blueGrey,
       body: Center(
@@ -99,7 +99,7 @@ class MyTicketView extends StatelessWidget {
             onPressed: () {
               String password = passwordController.text;
 
-              if (password == '5678') {
+              if (password == '4862') {
                 deleteOrderById(ordenId);
 
                 // Cerrar el diálogo primero

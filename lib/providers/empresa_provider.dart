@@ -28,8 +28,21 @@ Future<Empresa?> getEmpresa() async {
   final empresas = empresaBox.values.toList();
 
   // Verificar si hay empresas y devolver la primera
-  print('Número de empresas cargadas: ${empresas.length}');
+  
   
   // Si hay empresas, retornar la primera, de lo contrario retornar null
   return empresas.isNotEmpty ? empresas.first : null;
+}
+Future<Empresa?> vaciarEmpresa() async {
+  // Abrir la caja de Hive
+  var empresaBox = await Hive.openBox<Empresa>('empresa');
+
+  // Obtener los valores de la caja
+  await empresaBox.clear();
+
+  // Verificar si hay empresas y devolver la primera
+  print('vacioado');
+  
+  // Si hay empresas, retornar la primera, de lo contrario retornar null
+  
 }

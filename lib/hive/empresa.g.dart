@@ -19,7 +19,7 @@ class EmpresaAdapter extends TypeAdapter<Empresa> {
     return Empresa(
       id: fields[0] as String,
       title: fields[1] as String,
-      imageBytes: fields[4] as Uint8List,
+      imageBytes: fields[4] as Uint8List?,
       pointSale: fields[2] as String,
       seller: fields[3] as String,
     );

@@ -18,12 +18,12 @@ class Empresa extends HiveObject {
   String seller;
 
   @HiveField(4)
-  Uint8List imageBytes; // Aquí almacenamos la imagen en formato Uint8List
+  Uint8List? imageBytes; // Ahora es opcional, puede ser null
 
   Empresa({
     required this.id,
     required this.title,
-    required this.imageBytes,
+    this.imageBytes, // No es requerido
     required this.pointSale,
     required this.seller,
   });

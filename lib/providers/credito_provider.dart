@@ -32,7 +32,7 @@ Future<Credito?> getCredito() async {
   final empresas = empresaBox.values.toList();
 
   // Verificar si hay empresas y devolver la primera
-  print('Número de creditos cargados: ${empresas.length}');
+ 
   
   // Si hay empresas, retornar la primera, de lo contrario retornar null
   return empresas.isNotEmpty ? empresas.first : null;

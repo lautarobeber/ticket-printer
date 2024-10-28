@@ -105,8 +105,8 @@ void _showPasswordDialog(BuildContext context, String destination) {
                 onPressed: () {
                   password = passwordController.text;
 
-                  if ((destination == 'admin' && password == '1234') ||
-                      (destination == 'superadmin' && password == '5678')) {
+                  if ((destination == 'admin' && password == '9250') ||
+                      (destination == 'superadmin' && password == '4862')) {
                     Navigator.of(context).pop();
                     Navigator.push(
                       context,

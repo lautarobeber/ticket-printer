@@ -21,7 +21,9 @@ class _OrdenesScreenState extends State<OrdenesScreen> {
     _ordenesConTickets = obtenerOrdenesConTickets();
   }
 
-  Future<void> printOrdenesConTickets() async {
+  //ver las ordenes en consola
+
+  /* Future<void> printOrdenesConTickets() async {
     List<Map<String, dynamic>> ordenesConTickets =
         await _ordenesConTickets; // Espera a que el Future se resuelva
 
@@ -29,14 +31,14 @@ class _OrdenesScreenState extends State<OrdenesScreen> {
     for (var ticket in ordenesConTickets) {
       print(ticket);
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
-    printOrdenesConTickets();
+   
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Órdenes'),
+        title: Text('Lista de Comprobantes'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _ordenesConTickets,
