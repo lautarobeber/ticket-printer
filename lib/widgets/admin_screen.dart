@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sunmi/hive/empresa.dart';
+import 'package:sunmi/providers/cart_provider.dart';
 import 'package:sunmi/providers/empresa_provider.dart';
 import 'package:sunmi/sunmi.dart';
 
@@ -28,13 +29,14 @@ class _AdminScreenState extends State<AdminScreen> {
   String? _title;
   String? _pointSale;
   String? _seller;
+  var _ticketsZ;
   Uint8List? _imageBytes;
-
+  var totalTicketsZ = 0;
   @override
   void initState() {
     super.initState();
     _cargarEmpresa();
-    print('wep'); // Carga la empresa al inicializar
+    _cargarTicketsZ();
   }
 
   // Función para cargar la empresa desde Hive
@@ -53,6 +55,18 @@ class _AdminScreenState extends State<AdminScreen> {
     } else {
       // Manejo en caso de que no se encuentre ninguna empresa
       print('No se encontraron empresas en la base de datos');
+    }
+  }
+  void _cargarTicketsZ() async {
+    _ticketsZ  =
+        await getCajaZ(); // Ahora empresa será de tipo Empresa?
+
+    if ( _ticketsZ != null) {
+      // Si se encontró una empresa, asigna los valores a los controladores
+      print('Se encontraron los ticketz para la caja');
+    } else {
+      // Manejo en caso de que no se encuentre ninguna empresa
+      print('No se encontraron los ticketz para la caja');
     }
   }
 
@@ -77,6 +91,10 @@ class _AdminScreenState extends State<AdminScreen> {
         _imageBytes = bytes; // Guardamos los bytes de la imagen
       });
     }
+  }
+  Future<void> printZ() async {
+   /* cajaZ( _imageBytes); */
+   printer.printReceipt(_ticketsZ, _pointSale, _seller);
   }
 
   // Guardar el formulario en Hive
@@ -127,6 +145,10 @@ class _AdminScreenState extends State<AdminScreen> {
     // Limpiar los campos del formulario
     Navigator.pop(context);
   }
+
+  
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +244,8 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    printer.printReceipt();
+                    print(_ticketsZ);
+                    printer.printReceipt(_ticketsZ, _pointSale, _seller);
                   },
                   child: Text('Caja'),
                   style: ElevatedButton.styleFrom(

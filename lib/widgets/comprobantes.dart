@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:sunmi/hive/ticket.dart';
 
 import 'package:sunmi/providers/cart_provider.dart';
@@ -20,10 +21,19 @@ class _OrdenesScreenState extends State<OrdenesScreen> {
     _ordenesConTickets = obtenerOrdenesConTickets();
   }
 
- 
+  Future<void> printOrdenesConTickets() async {
+    List<Map<String, dynamic>> ordenesConTickets =
+        await _ordenesConTickets; // Espera a que el Future se resuelva
+
+    // Ahora puedes recorrerlo e imprimir cada elemento
+    for (var ticket in ordenesConTickets) {
+      print(ticket);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    printOrdenesConTickets();
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de Órdenes'),
@@ -42,7 +52,7 @@ class _OrdenesScreenState extends State<OrdenesScreen> {
 
           // Si hay órdenes, las mostramos en una lista
           var ordenes = snapshot.data;
-         
+
           return ordenes == null || ordenes.isEmpty
               ? Center(
                   child: Text('No hay órdenes disponibles'),
@@ -52,19 +62,30 @@ class _OrdenesScreenState extends State<OrdenesScreen> {
                       ordenes.length, // Aseguramos que ordenes no sea null
                   itemBuilder: (context, index) {
                     var orden = ordenes[index];
+                    String displayDate = orden['date'] != null
+                        ? DateFormat('yyyy-MM-dd HH:mm:ss').format(
+                            orden['date']) // Formatea solo si no es null
+                        : 'Fecha no disponible'; // Mensaje si la fecha es null
                     return ListTile(
                       title: Text('Orden: ${orden['cartId']}'),
-                      subtitle: Text(
-                          'Fecha: ${orden['fecha'] ?? 'Fecha no disponible'}'),
-                      onTap: () {
+                      subtitle: Text('Fecha: $displayDate'),
+                      onTap: () async {
                         // Navegar a la pantalla de detalles
-                        Navigator.push(
+                        var result = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                MyTicketView(tickets: orden['tickets']),
+                            builder: (context) => MyTicketView(
+                              tickets: orden['tickets'],
+                              ordenId: orden['cartId'],
+                              date: displayDate,
+                            ),
                           ),
                         );
+                        if (result == true) {
+                          setState(() {
+                            _ordenesConTickets = obtenerOrdenesConTickets();
+                          });
+                        }
                       },
                     );
                   },

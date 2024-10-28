@@ -12,16 +12,20 @@ class Cart extends HiveObject {
 
   @HiveField(1)
   final List<CartItem> items;
+
   @HiveField(2)
-   double total;
+  double total;
+
+  @HiveField(3) // Agrega el decorador para el nuevo campo
+  final DateTime? date; // Permite que sea nulo
 
   Cart({
     required this.cartId,
     required this.items,
     required this.total,
+    this.date, // No es requerido, así que no es necesario el "required"
   });
 }
-
 @HiveType(typeId: 2)
 class CartItem extends HiveObject{
   @HiveField(0)

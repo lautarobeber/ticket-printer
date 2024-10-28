@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sunmi/hive/cart.dart';
+import 'package:sunmi/hive/credito.dart';
 import 'package:sunmi/hive/empresa.dart';
 import 'package:sunmi/hive/ticket.dart';
 import 'package:sunmi/providers/cart_provider.dart';
 import 'package:sunmi/widgets/admin_screen.dart';
 import 'package:sunmi/widgets/comprobantes.dart';
+import 'package:sunmi/widgets/superadmin_screen.dart';
 
 import 'widgets/home_screen.dart';
 import 'widgets/list_tickets.dart';
@@ -24,10 +26,13 @@ void main() async {
   Hive.registerAdapter(CartAdapter());
   Hive.registerAdapter(CartItemAdapter());
   Hive.registerAdapter(EmpresaAdapter());
+  Hive.registerAdapter(CreditoAdapter());
   await Hive.initFlutter();
 
   await Hive.openBox<Ticket>('ticketsBox');
+  await Hive.openBox<Empresa>('empresa');
   await Hive.openBox<Cart>('carts');
+  await Hive.openBox<Credito>('credito');
 
   // Inicia tu aplicación
   runApp(const MyApp());
@@ -50,6 +55,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         // Ruta para la pantalla Admin
         '/admin': (context) => AdminScreen(),
+        '/superadmin': (context) => SuperAdminScreen(),
         '/comprobantes': (context) => OrdenesScreen(),
 
         ListarScreen.nameRoute: (context) => ListarScreen(),

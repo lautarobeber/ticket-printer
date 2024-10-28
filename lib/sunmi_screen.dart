@@ -30,7 +30,7 @@ class _SunmiScreenState extends State<SunmiScreen> {
             ElevatedButton(
               onPressed: () {
                 Sunmi printer = Sunmi();
-                printer.printReceipt();
+               
               },
               child: const Text('Print'),
             ),

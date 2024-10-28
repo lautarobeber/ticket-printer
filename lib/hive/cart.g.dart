@@ -20,19 +20,22 @@ class CartAdapter extends TypeAdapter<Cart> {
       cartId: fields[0] as String,
       items: (fields[1] as List).cast<CartItem>(),
       total: fields[2] as double,
+      date: fields[3] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Cart obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.cartId)
       ..writeByte(1)
       ..write(obj.items)
       ..writeByte(2)
-      ..write(obj.total);
+      ..write(obj.total)
+      ..writeByte(3)
+      ..write(obj.date);
   }
 
   @override

@@ -45,6 +45,8 @@ dependencies:
   ticket_widget: ^0.0.1
   visibility_detector: ^0.2.0
   image_picker: 0.8.3+2
+  image: ^3.0.1
+  intl: ^0.17.0
  
   
 

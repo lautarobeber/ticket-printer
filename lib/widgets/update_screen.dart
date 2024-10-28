@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sunmi/hive/ticket.dart';
 import 'package:sunmi/providers/tickets_provider.dart';
@@ -23,7 +25,7 @@ class UpdateScreen extends StatefulWidget {
 
 class _UpdateScreenState extends State<UpdateScreen> {
   // final _controller = ScrollController();
-  var uuid = Uuid();
+
   var ticketProvider = TicketsProvider();
 
   @override
@@ -34,6 +36,17 @@ class _UpdateScreenState extends State<UpdateScreen> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  String generateTicketId() {
+    var uuid = Uuid().v4();
+
+    // Convertir el UUID a bytes (sin guiones)
+    var uuidBytes = utf8.encode(uuid);
+
+    // Codificar en Base64 y limitar a los primeros 12 caracteres
+    var id_ticketEncoded = base64UrlEncode(uuidBytes).substring(0, 12);
+    return id_ticketEncoded;
   }
 
   @override
@@ -58,8 +71,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   onSaved: (newName) {
                     if (widget.indiceTicket == null) {
                       // Solo generar un nuevo ID si es un ticket nuevo
-                      widget.ticket.id = uuid.v4();
-                      print(widget.ticket.id);
+                      widget.ticket.id = generateTicketId();
+                     
                     }
                     print(widget.ticket.id);
                     widget.ticket.name = newName!;
@@ -67,6 +80,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                 ),
                 TextFormField(
                     decoration: InputDecoration(labelText: 'Price'),
+                    keyboardType: TextInputType.number,
                     initialValue: widget.indiceTicket != null
                         ? widget.ticket.price.toString()
                         : '',
